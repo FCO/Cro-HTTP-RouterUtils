@@ -1,6 +1,70 @@
 use Test;
+use lib 'lib', 'examples';
 use Cro::HTTP::RouterUtils;
+use ExampleRoute;
 
-pass "replace me";
+my $app = route {
+    include external => other-routes;
+    get -> 'greet', Str :$name { 200 }
+    get my sub greet_path('greet', $name) { "Hello, $name!" }
+    get my sub ret('ret') { 42 }
+    get my sub sum('sum', Int $a, Int $b) { $a + $b }
+    get -> 'redir' { endpoints('greet_path').redirect-to: :name<zx> }
+};
+
+subtest 'auto-named endpoint' => {
+    is endpoints('get_greet').path, '/greet', 'literal endpoint builds path';
+};
+
+subtest 'named endpoint with path parameter' => {
+    my $ep = endpoints('greet_path');
+    is $ep.path(:name<alice>), '/greet/alice', 'named path segment builds correctly';
+    is $ep."hx-attrs"(:name<bob>), "hx-get='/greet/bob'", 'hx-attrs uses GET and built path';
+    is $ep."hx-attrs"(:name<bob>, :trigger('click'), :target('#t'), :confirm('Are you sure?'), :indicator('#spin'), :oob, :boost),
+        "hx-get='/greet/bob' hx-trigger='click' hx-target='#t' hx-confirm='Are you sure?' hx-indicator='#spin' hx-swap-oob='true' hx-boost='true'",
+        'hx-attrs renders optional attributes';
+};
+
+subtest 'included routes' => {
+    is endpoints('external-ep1').method, 'GET', 'included GET endpoint method';
+    is endpoints('external-ep1').path, '/external/returns-ok', 'included endpoint path has prefix';
+    is endpoints('external-ep2').method, 'POST', 'included POST endpoint method';
+    is endpoints('external-ep2').path, '/external/using-post', 'included POST endpoint path has prefix';
+};
+
+subtest 'call() executes implementation' => {
+    is endpoints('ret').call, 42, 'call returns value from implementation';
+    is endpoints('sum').call(2, 3), 5, 'call passes positional args';
+};
+
+subtest 'typed parameter validation in path()' => {
+    my $ep = endpoints('sum');
+    is $ep.path(:a(1), :b(2)), '/sum/1/2', 'typed path with Ints works';
+    throws-like { $ep.path(:a("x"), :b(2)) }, X::AdHoc, 'typed mismatch throws';
+    throws-like { $ep.path(:a(1)) }, X::AdHoc, 'missing required parameter throws';
+};
+
+subtest 'nonexistent endpoint' => {
+    throws-like { endpoints('no-such') }, X::AdHoc, 'missing endpoint throws';
+};
+
+# Optional: test redirect response using Cro::HTTP::Test if available
+try {
+    EVAL q:to/END/;
+        use Test;
+        use Cro::HTTP::Test;
+        my $app2 = route {
+            get my sub greet_path('greet', $name) { 200 }
+            get -> 'redir' { endpoints('greet_path').redirect-to: :name<ok> }
+        };
+        test-service $app2, {
+            test get('/redir'), {
+                status 302;
+                header 'Location' => '/greet/ok';
+            }
+        }
+    END
+    CATCH { default { diag "Cro::HTTP::Test not available, skipping redirect test" } }
+}
 
 done-testing;

@@ -6,6 +6,7 @@
   "build-depends": [
   ],
   "depends": [
+    "Cro"
   ],
   "description": "blah blah blah",
   "license": "Artistic-2.0",
@@ -16,10 +17,11 @@
   },
   "resources": [
   ],
-  "source-url": "",
+  "source-url": "https://github.com/FCO/Cro-HTTP-RouterUtils.git",
   "tags": [
   ],
   "test-depends": [
+    "Cro::HTTP::Test"
   ],
   "version": "0.0.1"
 }

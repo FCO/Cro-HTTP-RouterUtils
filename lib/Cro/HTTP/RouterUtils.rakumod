@@ -38,7 +38,19 @@ sub EXPORT(--> Map()) {
 				$.data.<handler>.method
 			}
 			method call(|c) {
-				$.data.<handler>.implementation.(|c)
+				my &impl = $.data.<handler>.implementation;
+				my @sup   = c.list;
+				my $idx   = 0;
+				my @args;
+				for &impl.signature.params.grep({ !.named }) -> $p {
+					my $lit = $p.constraint_list.head;
+					if $lit.defined {
+						@args.push: $lit;
+					} else {
+						@args.push: @sup[$idx++];
+					}
+				}
+				&impl.(|@args, |c.hash)
 			}
 			method path(*%values) {
 				my @path = $.data.<path>[];
