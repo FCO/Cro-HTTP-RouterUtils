@@ -6,10 +6,10 @@ use ExampleRoute;
 my $app = route {
     include external => other-routes;
     get -> 'greet', Str :$name { 200 }
-    get my sub greet_path('greet', $name) { "Hello, $name!" }
+    get my sub greet-path('greet', $name) { "Hello, $name!" }
     get my sub ret('ret') { 42 }
     get my sub sum('sum', Int $a, Int $b) { $a + $b }
-    get -> 'redir' { endpoints('greet_path').redirect-to: :name<zx> }
+    get -> 'redir' { endpoints('greet-path').redirect-to: :name<zx> }
 };
 
 subtest 'auto-named endpoint' => {
@@ -17,19 +17,19 @@ subtest 'auto-named endpoint' => {
 };
 
 subtest 'named endpoint with path parameter' => {
-    my $ep = endpoints('greet_path');
+    my $ep = endpoints('greet-path');
     is $ep.path(:name<alice>), '/greet/alice', 'named path segment builds correctly';
     is $ep."hx-attrs"(:name<bob>), "hx-get='/greet/bob'", 'hx-attrs uses GET and built path';
     is $ep."hx-attrs"(
         :name<bob>,
         :trigger('click'), :target<#t>, :confirm('Are you sure?'), :indicator('#spin'),
         :oob, :boost,
-        :push_url<true>, :replace_url('/next'), :select<#frag>, :select_oob<#frag2>,
+        :push-url<true>, :replace-url('/next'), :select<#frag>, :select-oob<#frag2>,
         :swap('outerHTML settle:200ms'),
         :vals(q[{"extra":1}]), :headers(q[{"X-Test":"1"}]),
         :disable,
-        :disabled_elt<#btn>, :disinherit<*>, :encoding<multipart/form-data>, :ext<some-ext>,
-        :history<false>, :history_elt<#snap>,
+        :disabled-elt<#btn>, :disinherit<*>, :encoding<multipart/form-data>, :ext<some-ext>,
+        :history<false>, :history-elt<#snap>,
         :include<#form>, :inherit<*>, :params<*>, :prompt<Type?>,
         :request(q[{"timeout":1000}]), :sync<this>, :validate,
         :vars(q[{"k":"v"}]),
@@ -67,8 +67,8 @@ try {
         use Test;
         use Cro::HTTP::Test;
         my $app2 = route {
-            get my sub greet_path('greet', $name) { 200 }
-            get -> 'redir' { endpoints('greet_path').redirect-to: :name<ok> }
+            get my sub greet-path('greet', $name) { 200 }
+            get -> 'redir' { endpoints('greet-path').redirect-to: :name<ok> }
         };
         test-service $app2, {
             test get('/redir'), {
