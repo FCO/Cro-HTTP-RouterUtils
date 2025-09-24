@@ -6,7 +6,8 @@
   "build-depends": [
   ],
   "depends": [
-    "Cro::HTTP"
+    "Cro::HTTP",
+    "Hash::Agnostic"
   ],
   "description": "blah blah blah",
   "license": "Artistic-2.0",
