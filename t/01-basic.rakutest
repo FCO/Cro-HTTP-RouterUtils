@@ -61,23 +61,13 @@ subtest 'nonexistent endpoint' => {
     throws-like { endpoints('no-such') }, X::AdHoc, 'missing endpoint throws';
 };
 
-# Optional: test redirect response using Cro::HTTP::Test if available
-try {
-    EVAL q:to/END/;
-        use Test;
-        use Cro::HTTP::Test;
-        my $app2 = route {
-            get my sub greet-path('greet', $name) { 200 }
-            get -> 'redir' { endpoints('greet-path').redirect-to: :name<ok> }
-        };
-        test-service $app2, {
-            test get('/redir'), {
-                status 302;
-                header 'Location' => '/greet/ok';
-            }
-        }
-    END
-    CATCH { default { diag "Cro::HTTP::Test not available, skipping redirect test" } }
+use Cro::HTTP::Test;
+my $app2 = route {
+    get my sub greet-path('greet', $name) { 200 }
+    get -> 'redir' { endpoints('greet-path').redirect-to: :name<ok> }
+}
+test-service $app2, {
+    test get('/redir', :!follow), :status(307), :headers{ :Location</greet/ok> };
 }
 
 done-testing;

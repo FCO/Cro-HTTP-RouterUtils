@@ -2,11 +2,14 @@ use Cro::HTTP::RouterUtils;
 use Cro::HTTP::Server;
 use lib ".";
 use ExampleRoute;
+
 my $application = route {
     include external => other-routes;
+
     get -> 'greet', Str :$name {
         content 'text/plain', "Hello, $name!";
     }
+
     get -> "form" {
         my $ep = endpoints("get_greet"); # Endpoint has no explicit name, use method ans parameters
         content 'text/html', qq:to/END/
@@ -16,12 +19,15 @@ my $application = route {
             </form>
         END
     }
+
     get my sub greet-path('greet', $name) {
         content 'text/plain', "Hello, $name!";
     }
+
     get -> 'redirect' {
         endpoints("greet-path").redirect-to: :name<fernando> # Use Endpoint by name
     }
+
     get -> "links" {
         my $ep = endpoints("greet-path"); # Use Endpoint by name
         content 'text/html', qq:to/END/
@@ -31,6 +37,7 @@ my $application = route {
             <a href='{ $ep.path: :name<test4> }'>test4</a><br>
         END
     }
+
     get -> "links-htmx" {
         my $ep = endpoints("greet-path"); # Use Endpoint by name
         content 'text/html', qq:to/END/

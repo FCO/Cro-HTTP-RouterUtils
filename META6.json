@@ -6,14 +6,16 @@
   "build-depends": [
   ],
   "depends": [
-    "Cro"
+    "Cro::HTTP"
   ],
   "description": "blah blah blah",
   "license": "Artistic-2.0",
   "name": "Cro::HTTP::RouterUtils",
   "perl": "6.d",
   "provides": {
-    "Cro::HTTP::RouterUtils": "lib/Cro/HTTP/RouterUtils.rakumod"
+    "Cro::HTTP::RouterUtils": "lib/Cro/HTTP/RouterUtils.rakumod",
+    "Cro::HTTP::RouterUtils::EndPoint": "lib/Cro/HTTP/RouterUtils/EndPoint.rakumod",
+    "Cro::HTTP::RouterUtils::Associative": "lib/Cro/HTTP/RouterUtils/Associative.rakumod"
   },
   "resources": [
   ],
@@ -21,6 +23,7 @@
   "tags": [
   ],
   "test-depends": [
+    "Cro",
     "Cro::HTTP::Test"
   ],
   "version": "0.0.1"
