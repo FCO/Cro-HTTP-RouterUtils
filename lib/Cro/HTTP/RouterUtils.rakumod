@@ -161,7 +161,7 @@ L<Cro::HTTP::Router>, L<Cro::HTTP>
 
 =head1 AUTHOR
 
-Fernando Corrêa de Oliveira <fernando.correa@payprop.com>
+Fernando Corrêa de Oliveira <fco@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

@@ -9,14 +9,14 @@
     "Cro::HTTP",
     "Hash::Agnostic"
   ],
-  "description": "blah blah blah",
+  "description": "Utilities for Cro::HTTP::Router to reference endpoints, build URLs and HTMX attributes",
   "license": "Artistic-2.0",
   "name": "Cro::HTTP::RouterUtils",
   "perl": "6.d",
   "provides": {
     "Cro::HTTP::RouterUtils": "lib/Cro/HTTP/RouterUtils.rakumod",
-    "Cro::HTTP::RouterUtils::EndPoint": "lib/Cro/HTTP/RouterUtils/EndPoint.rakumod",
-    "Cro::HTTP::RouterUtils::Associative": "lib/Cro/HTTP/RouterUtils/Associative.rakumod"
+    "Cro::HTTP::RouterUtils::Associative": "lib/Cro/HTTP/RouterUtils/Associative.rakumod",
+    "Cro::HTTP::RouterUtils::EndPoint": "lib/Cro/HTTP/RouterUtils/EndPoint.rakumod"
   },
   "resources": [
   ],
