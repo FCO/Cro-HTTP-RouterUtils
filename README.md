@@ -54,42 +54,34 @@ USAGE
 Exported symbols
 ----------------
 
-over
-====
-
-4
-
-  * * `route`
+  * `route`
 
 Same as `Cro::HTTP::Router::route`, but also stores the created route set in `$*ROOT-ROUTE`, so `endpoints` can find your handlers without extra plumbing.
 
-  * * `endpoints`
+  * `endpoints`
 
-- `endpoints($name, $route?)` → `Cro::HTTP::RouterUtils::EndPoint` (throws if not found) - `endpoints($route = $*ROOT-ROUTE, :@prefix)` → associative map of endpoints (lazy)
+      * `endpoints($name, $route?)` → `Cro::HTTP::RouterUtils::EndPoint` (throws if not found)
 
-back
-====
-
-
+      * `endpoints($route = $*ROOT-ROUTE, :@prefix)` → associative map of endpoints (lazy)
 
 Referencing endpoints
 ---------------------
 
-- *By explicit name* (recommended): name the implementation and use that name.
+  * *By explicit name*: name the implementation and use that name.
 
 ```raku
 get my sub greet-path('greet', $name) { ... }
 my $ep = endpoints('greet-path');
 ```
 
-- *Auto-named* (when you don't name it): use `"<method>_<segments>"`, where segments are literal parts and positional params. For example:
+  * *Auto-named* (when you don't name it): use `"<method>_<segments>"`, where segments are literal parts and positional params. For example:
 
 ```raku
 get -> 'greet', Str :$name { ... }
 my $ep = endpoints('get_greet');
 ```
 
-- *Included routes*: when using `include prefix =` route>, the prefix affects the built path only; the endpoint name remains the one defined by the included route.
+  * *Included routes*: when using `include prefix =` route>, the prefix affects the built path only; the endpoint name remains the one defined by the included route.
 
 Building URLs (with type safety)
 --------------------------------
@@ -138,7 +130,15 @@ API
 Class `Cro::HTTP::RouterUtils::EndPoint`
 ----------------------------------------
 
-- `method method` → Str: the HTTP method (GET/POST/...) - `method path(*%values)` → Str: builds the URL, validating typed params - `method redirect-to(*%values)`: emits a Cro redirect to the built path - `method hx-attrs(..., *%pars)` → Str: returns an attribute string suitable for HTMX - `method call(|c)`: calls the underlying implementation (useful for tests/PL)
+  * `method method` → Str: the HTTP method (GET/POST/...)
+
+  * `method path(*%values)` → Str: builds the URL, validating typed params
+
+  * `method redirect-to(*%values)`: emits a Cro redirect to the built path
+
+  * `method hx-attrs(..., *%pars)` → Str: returns an attribute string suitable for HTMX
+
+  * `method call(|c)`: calls the underlying implementation (useful for tests/PL)
 
 SEE ALSO
 ========

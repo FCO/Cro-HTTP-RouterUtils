@@ -14,7 +14,8 @@ method AT-KEY($key) {
 	%!data{$key} //= Cro::HTTP::RouterUtils::EndPoint.new: %!routes{$key}
 }
 
-method keys { %!routes.keys }
+method keys   { %!routes.keys }
+method values { $.keys.map: { $.AT-KEY: $_ if $_ } }
 
 method kv {
 	gather for @.keys { .take; take self.AT-KEY: $_ }

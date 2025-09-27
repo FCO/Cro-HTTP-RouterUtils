@@ -27,6 +27,22 @@ method call(|c) {
 	&impl.(|@args, |c.hash)
 }
 
+method gist { "{ $.method.uc }\t{ $.path-template }" }
+
+method path-template {
+	my @path = $.data.<path>[];
+	"/" ~ (
+		@path.map({
+			do if $_ ~~ Str {
+				.Str
+			} else {
+				my (:$key, :$value) := .<>;
+				"\{ { $value.^name } { $key.Str } }"
+			}
+		}).join: "/"
+	)
+}
+
 method path(*%values) {
 	my @path = $.data.<path>[];
 	"/" ~ (

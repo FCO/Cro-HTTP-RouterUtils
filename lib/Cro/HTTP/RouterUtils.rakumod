@@ -1,8 +1,10 @@
-sub EXPORT(--> Map()) {
-	use Cro::HTTP::Router;
-	use experimental :cached;
-	use Cro::HTTP::RouterUtils::Associative;
+use Cro::HTTP::Router;
+use experimental :cached;
+use Cro::HTTP::RouterUtils::Associative;
 
+module Cro::HTTP::RouterUtils {}
+
+sub EXPORT(--> Map()) {
 	multi endpoints(Cro::HTTP::Router::RouteSet $route = $*ROOT-ROUTE, :@prefix) is cached {
 		Cro::HTTP::RouterUtils::Associative.new: $route, :@prefix
 	}
@@ -73,30 +75,30 @@ underlying implementation.
 
 =head2 Exported symbols
 
-=over 4
-
-=item * C<route>
+=item C<route>
 
 Same as C<Cro::HTTP::Router::route>, but also stores the created route set in C<$*ROOT-ROUTE>,
 so C<endpoints> can find your handlers without extra plumbing.
 
-=item * C<endpoints>
+=begin item
 
-- C<endpoints($name, $route?)> → C<Cro::HTTP::RouterUtils::EndPoint> (throws if not found)
-- C<endpoints($route = $*ROOT-ROUTE, :@prefix)> → associative map of endpoints (lazy)
+C<endpoints>
 
-=back
+=item C<endpoints($name, $route?)> → C<Cro::HTTP::RouterUtils::EndPoint> (throws if not found)
+=item C<endpoints($route = $*ROOT-ROUTE, :@prefix)> → associative map of endpoints (lazy)
+
+=end item
 
 =head2 Referencing endpoints
 
-- I<By explicit name> (recommended): name the implementation and use that name.
+=item I<By explicit name>: name the implementation and use that name.
 
 =begin code :lang<raku>
 get my sub greet-path('greet', $name) { ... }
 my $ep = endpoints('greet-path');
 =end code
 
-- I<Auto-named> (when you don't name it): use C<"<method>_<segments>">, where segments are
+=item I<Auto-named> (when you don't name it): use C<"<method>_<segments>">, where segments are
 literal parts and positional params. For example:
 
 =begin code :lang<raku>
@@ -104,7 +106,7 @@ get -> 'greet', Str :$name { ... }
 my $ep = endpoints('get_greet');
 =end code
 
-- I<Included routes>: when using C<include prefix => route>, the prefix affects the built path
+=item I<Included routes>: when using C<include prefix => route>, the prefix affects the built path
 only; the endpoint name remains the one defined by the included route.
 
 =head2 Building URLs (with type safety)
@@ -149,11 +151,11 @@ endpoints('sum').call(2, 3);  # -> 5
 
 =head2 Class C<Cro::HTTP::RouterUtils::EndPoint>
 
-- C<method method> → Str: the HTTP method (GET/POST/...)
-- C<method path(*%values)> → Str: builds the URL, validating typed params
-- C<method redirect-to(*%values)>: emits a Cro redirect to the built path
-- C<method hx-attrs(..., *%pars)> → Str: returns an attribute string suitable for HTMX
-- C<method call(|c)>: calls the underlying implementation (useful for tests/PL)
+=item C<method method> → Str: the HTTP method (GET/POST/...)
+=item C<method path(*%values)> → Str: builds the URL, validating typed params
+=item C<method redirect-to(*%values)>: emits a Cro redirect to the built path
+=item C<method hx-attrs(..., *%pars)> → Str: returns an attribute string suitable for HTMX
+=item C<method call(|c)>: calls the underlying implementation (useful for tests/PL)
 
 =head1 SEE ALSO
 
